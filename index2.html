@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Report</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/style.css?version=1.1">
+    <script src="common/jQuery/jquery-2.1.4.min.js"></script>
+    <script src="common/react/react.js"></script>
+    <script src="common/react/react-dom.js"></script>
+    <script src="common/react/browser.min.js"></script>
+    <script src="js/dataReact.js"></script>
+</head>
+<body>
+	<!-- 页眉 -->
+    <header>
+    	<span class="title">Report</span>
+    	<ul>
+    		<li class="liClick">Overall</li>
+    		<li>Speccific</li>
+    	</ul>
+    </header>
+    <!-- 主体 -->
+    <div class="main">
+    	<div class="filter">
+    		<select name="" class="filSelect" lay-verify="" >
+    			<option value="">Filter</option>
+    			<option value="Districts">Districts</option>
+    			<option value="Townships">Townships</option>
+    		</select>
+    		<input type="text" class="filInput" placeholder="Search">
+    		<img src="img/search.ico" class="searchIcon" alt="">
+    	</div>
+    	<div class="tableDiv">
+    		<table class="table">
+    			<tr class="trFir">
+    			 	<th>Region</th>
+    			 	<th>Last input</th>
+    			 	<th>Number of forms</th>
+    			 	<th>Number of voters</th>
+    			 	<th>Updates</th>
+    			 </tr>
+    		</table>
+            <table class="table" id="showTable"></table>
+    	</div>
+    </div>
+    <script type="text/babel">
+        renderData();
+        function renderData(){
+
+            //获取数据
+            var dataAll = getData();
+
+            //start component
+            var TrAll = React.createClass({
+              render: function() {
+                var trList = [];
+                this.props.data.each(function(i,province){
+                        trList.push(<Province name={province.name}/>);
+                        province.data.each(function(j,city){
+                          trList.push(<City name={city.name}/>)
+                          city.data.each(function(k,district) {
+                            trList.push(<District name={district.name}/>)
+                          })
+                        })
+                     })
+                return <tbody>{trList}</tbody>
+                    // {  
+                    //   this.props.data.map(function (obj){
+                    //     console.log(obj);
+                    //       return <Province name={obj.name} city={obj.data} />
+                    //   }) 
+                    // }
+              }
+            });
+            //province component
+            var Province =  React.createClass({
+                render : function(){
+                    return 
+                      <tr>
+                          <td className="tdFir">{this.props.name}</td>
+                          <td>obj.lastInput</td>
+                          <td>obj.forms</td>
+                          <td>obj.voter</td>
+                          <td>obj.update</td>
+                        </tr>   
+                      //   {
+                      //   this.props.city.map(function(city){
+                      //       console.log(city);
+                      //         <City name={city.name} district={city.data} />
+                      //     })
+                      // }
+                }
+            })
+            // City component
+            var City = React.createClass({
+                render: function() {
+                    // {   
+                    //   this.props.district.map(function (district){
+                    //           <District name = {district.name} />
+                    //   })
+                    // }
+                    return <tr>
+                           <td className="tdFir">{this.props.name}</td>
+                           <td>obj.lastInput</td>
+                           <td>obj.forms</td>
+                           <td>obj.voter</td>
+                           <td>obj.update</td>
+                           </tr>
+                    
+                }
+            })
+            // District component
+            var District = React.createClass({
+                render: function(){
+                    return <tr>
+                          <td className="tdFir">{this.props.name}</td>
+                          <td>obj.lastInput</td>
+                          <td>obj.forms</td>
+                          <td>obj.voter</td>
+                          <td>obj.update</td>
+                          </tr>
+                }
+            })
+            //数据渲染
+            ReactDOM.render(
+                <TrAll data={dataAll}/>,
+                $("#showTable")[0]
+            )
+        }
+    </script>
+</body>
+</html>
