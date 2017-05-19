@@ -23,7 +23,8 @@ var getData = function(){
 								forms: 324456,
 								voter: 13425,
 								update: "2017-03-22",
-								level: "levelthree"
+								level: "levelthree",
+								
 							},
 							{
 								name: "shizhong",

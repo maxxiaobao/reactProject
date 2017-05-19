@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Report</title>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/style3.css?version=1.1">
+    <script src="common/jQuery/jquery-2.1.4.min.js"></script>
+    <script src="common/react/react.js"></script>
+    <script src="common/react/react-dom.js"></script>
+    <script src="common/react/browser.min.js"></script>
+    <script src="js/dataReact.js"></script>
+</head>
+<body>
+	<!-- 页眉 -->
+    <header>
+    	<span class="title">Report</span>
+    	<ul>
+    		<li class="liClick">Overall</li>
+    		<li>Speccific</li>
+    	</ul>
+    </header>
+    <!-- 主体 -->
+    <div class="main">
+    	<div class="filter">
+    		<select name="" class="filSelect" lay-verify="" >
+    			<option value="">Filter</option>
+    			<option value="Districts">Districts</option>
+    			<option value="Townships">Townships</option>
+    		</select>
+    		<input type="text" class="filInput" placeholder="Search">
+    		<img src="img/search.ico" class="searchIcon" alt="">
+    	</div>
+    	<div class="tableDiv">
+    		<table class="table">
+    			<tr class="trFir">
+    			 	<th class="tdFir">Region</th>
+    			 	<th class="tdOther">Last input</th>
+    			 	<th class="tdOther">Number of forms</th>
+    			 	<th class="tdOther">Number of voters</th>
+    			 	<th class="tdOther">Updates</th>
+    			 </tr>
+    		</table>
+    	</div>
+        <div class="showDiv"></div>
+    </div>
+    <!--<script src="js/main3.js" type="text/babel"></script> -->
+    <script type="text/babel">
+
+        //获取数据
+        var Data = getData();
+
+        //Province component
+        var Province = React.createClass({
+            render: function(){
+                var tableList = this.props.data.map(function (province){
+                    return  <table className='table province' key={province.name}>
+                            <Tr data={province} />
+                            <City data={province.data} />
+                            </table>
+                     })
+                return <div className="">{tableList}</div>
+            }
+        })
+
+        //City Component
+        var City = React.createClass({
+            render: function(){
+                var tableList = this.props.data.map(function (city){
+                    return <table  key={city.name} className="table city">  
+                           <Tr data={city} />
+                           <District data={city.data}/>
+                           </table>
+                })
+                return <div>{tableList}</div>
+            }
+        })
+        //District Component
+        var District = React.createClass({
+            render: function(){
+                var tableList = this.props.data.map(function (district){
+                    return  <Tr key={district.name} data={district} /> 
+                })
+                return <table className="table district">
+                        {tableList}
+                       </table>           
+            }
+        })
+        //Tr Component
+        var Tr = React.createClass({
+            render: function(){
+                var obj = this.props.data;
+                return  <tr className={obj.level}>
+                        <NameTd data={obj}/>
+                        <td className="tdOther">{obj.lastInput}</td>
+                        <td className="tdOther">{obj.forms}</td>
+                        <td className="tdOther">{obj.voter}</td>
+                        <td className="tdOther">{obj.update}</td>
+                       </tr>
+            }
+        })
+        //NameTd component
+            var NameTd = React.createClass({
+              render: function(){
+                var obj = this.props.data;
+                return <td className="tdFir">
+                       <span className='initials'>{obj.name.slice(0,1)}</span>
+                       <span className='name'>{obj.name}</span>
+                       <img src='img/down.png' className='downPng' alt=''/>
+                       <Tag data={obj} />
+                       </td>
+              }
+            })
+            //tag component
+            var Tag = React.createClass({
+              getInitialState: function() {
+                 return { src: "img/down.ico" };
+                },
+              showAndHide: function (event){
+                var nowTable = $(event.target).parent().parent().parent().parent();
+                if(this.state.src == "img/down.ico"){
+                     $(nowTable).find("table").hide();
+                    this.setState({ 
+                        src: "img/plus.ico"
+                    })
+                }else{
+                    $(nowTable).find("table").show();
+                    this.setState({ 
+                        src: "img/down.ico"
+                    })
+                }
+                
+              },
+              render: function(){
+                var len = 0;
+                var data = this.props.data;
+                if(data.data){
+                  len = data.data.length;
+                }
+                if(len != 0){
+                  return <span put="yes" className="tip">
+                          {len}
+                          {data.level}
+                          <img src={this.state.src} className="plusAnddown" onClick={this.showAndHide} alt="" />
+                          </span>;
+                }else{
+                  return <span></span>
+                }
+              }
+            })
+        ReactDOM.render(
+            <Province data={Data} />,
+            $(".showDiv")[0]
+            )
+    </script>
+</body>
+</html>

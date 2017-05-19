@@ -5,11 +5,11 @@
 	<title>Report</title>
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/style.css?version=1.1">
-    <script src="common/jQuery/jquery-2.1.4.min.js"></script>
-    <script src="common/react/react.js"></script>
-    <script src="common/react/react-dom.js"></script>
-    <script src="common/react/browser.min.js"></script>
-    <script src="js/dataReact.js"></script>
+  <script src="common/jQuery/jquery-2.1.4.min.js"></script>
+  <script src="common/react/react.js"></script>
+  <script src="common/react/react-dom.js"></script>
+  <script src="common/react/browser.min.js"></script>
+  <script src="js/dataReact.js"></script>
 </head>
 <body>
 	<!-- 页眉 -->
@@ -55,72 +55,91 @@
             var TrAll = React.createClass({
               render: function() {
                 var trList = [];
-                this.props.data.each(function(i,province){
-                        trList.push(<Province name={province.name}/>);
-                        province.data.each(function(j,city){
-                          trList.push(<City name={city.name}/>)
-                          city.data.each(function(k,district) {
-                            trList.push(<District name={district.name}/>)
-                          })
-                        })
-                     })
+                this.props.data.forEach(function (province,i){
+                    trList.push(<Province key={province.name} province={province}/>);
+                    province.data.forEach(function (city,j){
+                      trList.push(<City key={city.name} city={city} />)
+                      city.data.forEach(function (district,k) {
+                        trList.push(<District key={district.name} district={district} />)
+                      })
+                    })
+                 })
                 return <tbody>{trList}</tbody>
-                    // {  
-                    //   this.props.data.map(function (obj){
-                    //     console.log(obj);
-                    //       return <Province name={obj.name} city={obj.data} />
-                    //   }) 
-                    // }
               }
             });
             //province component
             var Province =  React.createClass({
+
+                clickHandle: function(){
+                      alert(123);
+                },
+
                 render : function(){
-                    return 
-                      <tr>
-                          <td className="tdFir">{this.props.name}</td>
-                          <td>obj.lastInput</td>
-                          <td>obj.forms</td>
-                          <td>obj.voter</td>
-                          <td>obj.update</td>
+                  var province = this.props.province
+                  return <tr className={province.level} onClick={this.clickHandle}>
+                        <NameTd data={province} name={province.name}/>
+                        <td>{province.lastInput}</td>
+                        <td>{province.forms}</td>
+                        <td>{province.voter}</td>
+                        <td>{province.update}</td>
                         </tr>   
-                      //   {
-                      //   this.props.city.map(function(city){
-                      //       console.log(city);
-                      //         <City name={city.name} district={city.data} />
-                      //     })
-                      // }
                 }
             })
             // City component
             var City = React.createClass({
                 render: function() {
-                    // {   
-                    //   this.props.district.map(function (district){
-                    //           <District name = {district.name} />
-                    //   })
-                    // }
-                    return <tr>
-                           <td className="tdFir">{this.props.name}</td>
-                           <td>obj.lastInput</td>
-                           <td>obj.forms</td>
-                           <td>obj.voter</td>
-                           <td>obj.update</td>
-                           </tr>
+                  var city = this.props.city;
+                  return <tr className={city.level}>
+                         <NameTd data={city}  name={city.name}/>
+                         <td>{city.lastInput}</td>
+                         <td>{city.forms}</td>
+                         <td>{city.voter}</td>
+                         <td>{city.update}</td>
+                         </tr>
                     
                 }
             })
             // District component
             var District = React.createClass({
                 render: function(){
-                    return <tr>
-                          <td className="tdFir">{this.props.name}</td>
-                          <td>obj.lastInput</td>
-                          <td>obj.forms</td>
-                          <td>obj.voter</td>
-                          <td>obj.update</td>
-                          </tr>
+                  var district = this.props.district;
+                  return <tr className={district.level}>
+                         <NameTd data={district} name={district.name}/>
+                         <td>{district.lastInput}</td>
+                         <td>{district.forms}</td>
+                         <td>{district.voter}</td>
+                         <td>{district.update}</td>
+                         </tr>
                 }
+            })
+            //NameTd component
+            var NameTd = React.createClass({
+              render: function(){
+                return <td className="tdFir">
+                       <span className='initials'>{this.props.name.slice(0,1)}</span>
+                       <span className='name'>{this.props.name}</span>
+                       <img src='img/down.png' className='downPng' alt=''/>
+                       <Tag data={this.props.data} />
+                       </td>
+              }
+            })
+            //tag component
+            var Tag = React.createClass({
+              render: function(){
+                var len = 0;
+                if(this.props.data.data){
+                  len = this.props.data.data.length;
+                }
+                if(len != 0){
+                  return <span put="yes" className="tip">
+                          {len}
+                          {this.props.data.level}
+                          <img src="img/down.ico" className="plusAnddown" alt="" />
+                          </span>;
+                }else{
+                  return <span></span>
+                }
+              }
             })
             //数据渲染
             ReactDOM.render(
